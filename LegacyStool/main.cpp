@@ -11,6 +11,11 @@ struct WindowData {
 	GLint handle;
 } window;
 
+struct Disk {
+	GLdouble xRot, yRot;
+} disk;
+
+
 void DisplayFunc() {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -26,18 +31,15 @@ void DisplayFunc() {
 	glm::mat4 modelview_matrix;
 
 	modelview_matrix = glm::translate(modelview_matrix, glm::vec3(0.0f, 0.0f, -5.0f));
+	modelview_matrix = glm::rotate(modelview_matrix, float(disk.xRot), glm::vec3(1.0f, 0.0f, 0.0f));
+	modelview_matrix = glm::rotate(modelview_matrix, float(disk.yRot), glm::vec3(0.0f, 1.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(modelview_matrix));
 	//glLoadIdentity();
 	//glTranslated(0, 0, -5);
 
-	glBegin(GL_TRIANGLES);
-	glColor3d(1, 0, 0);
-	glVertex2d(0, 1);
-	glColor3d(0, 1, 0);
-	glVertex2d(1, 0);
-	glColor3d(0, 0, 1);
-	glVertex2d(-1, 0);
-	glEnd();
+	GLUquadric *d = gluNewQuadric();
+	gluCylinder(d, 0.2, 0.2, 1, 64, 64);
+
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
@@ -57,10 +59,25 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 	case 27:
 		glutLeaveMainLoop();
 		return;
+	case 'w':
+		disk.xRot += 10;
+		return;
+	case 's':
+		disk.xRot -= 10;
+		return;
+	case 'd':
+		disk.yRot += 10;
+		return;
+	case 'a':
+		disk.yRot -= 10;
+		return;
 	}
 }
 
 int main(int argc, char * argv[]) {
+
+	disk.xRot = 0;
+	disk.yRot = 0;
 
 	cout << "Hello World" << endl;
 	glutInit(&argc , argv);
