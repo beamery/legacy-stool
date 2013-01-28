@@ -38,7 +38,7 @@ void DisplayFunc() {
 	//glTranslated(0, 0, -5);
 
 	GLUquadric *d = gluNewQuadric();
-	gluCylinder(d, 0.5, 0.2, 1, 64, 64);
+	gluCylinder(d, 0.2, 0.2, 1, 64, 64);
 
 	glutSwapBuffers();
 	glutPostRedisplay();
