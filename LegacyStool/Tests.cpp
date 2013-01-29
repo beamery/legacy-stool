@@ -2,6 +2,7 @@
 
 void runTests() {
 	testMatrixStack();
+	testScene();
 }
 
 
@@ -31,4 +32,9 @@ void testMatrixStack() {
 		cout << "pop error" << endl;
 		throw MATSTACK_ERR;
 	}
+}
+
+void testScene() {
+	Scene s(4);
+	s.print();
 }

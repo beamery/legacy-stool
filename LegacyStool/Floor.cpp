@@ -3,9 +3,9 @@
 Floor::Floor() {
 
 	// Initialize grid to a 10ft square, with points every 6 inches
-	int xPos = 0;
+	double xPos = 0;
 	for (int i = 0; i < GRID_SIZE; i++) {
-		int zPos = 0;
+		double zPos = 0;
 		for (int j = 0; j < GRID_SIZE; j++) {
 			grid[i][j] = glm::vec3(xPos, 0, zPos);
 			zPos += 6;

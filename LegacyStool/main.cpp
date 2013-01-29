@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> 
+#include "Tests.h"
+#include "Scene.h"
 
 using namespace std;
 
@@ -91,7 +93,8 @@ void KeyboardFunc(unsigned char c, int x, int y)
 
 int main(int argc, char * argv[])
 {
-	cout << "Hello World" << endl;
+	runTests();
+
 	glutInit(&argc , argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(window.width , window.height);

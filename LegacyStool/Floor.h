@@ -11,8 +11,14 @@
 class Floor {
 
 public:
+
+	// initializes the floor as a 10ft by 10ft grid, separated into
+	// 6in by 6in sections
 	Floor();
+
+	// Draws the grid
 	void draw(MatrixStack &mViewStack);
+
 private:
 	glm::vec3 grid[GRID_SIZE][GRID_SIZE];
 
