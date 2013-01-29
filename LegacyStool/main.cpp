@@ -4,6 +4,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> 
 
+#include "Tests.h"
+#include "MatrixStack.h"
+#include "Floor.h"
+
 using namespace std;
 
 struct WindowData {
@@ -11,40 +15,50 @@ struct WindowData {
 	GLint handle;
 } window;
 
-struct Disk {
+struct Camera {
 	GLdouble xRot, yRot;
-} disk;
+} camera;
 
 
-void DisplayFunc() {
+MatrixStack modelStack;
+Floor worldFloor;
+
+void displayFunc() {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glMatrixMode(GL_PROJECTION);
 
 	glm::mat4 projection_matrix = glm::perspective(30.0f, float(window.width) / float(window.height), 1.0f, 10.0f);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
-	//glLoadIdentity();
-	//gluPerspective(30, double(window.width) / double(window.height), 1, 10);
 
 	glViewport(0, 0, window.width, window.height);
 	glMatrixMode(GL_MODELVIEW);
-	glm::mat4 modelview_matrix;
 
-	modelview_matrix = glm::translate(modelview_matrix, glm::vec3(0.0f, 0.0f, -5.0f));
-	modelview_matrix = glm::rotate(modelview_matrix, float(disk.xRot), glm::vec3(1.0f, 0.0f, 0.0f));
-	modelview_matrix = glm::rotate(modelview_matrix, float(disk.yRot), glm::vec3(0.0f, 1.0f, 0.0f));
-	glLoadMatrixf(glm::value_ptr(modelview_matrix));
-	//glLoadIdentity();
-	//glTranslated(0, 0, -5);
+	modelStack.push();
 
-	GLUquadric *d = gluNewQuadric();
-	gluCylinder(d, 0.2, 0.2, 1, 64, 64);
+	// Camera transform
+	modelStack.active = glm::translate(modelStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
+	modelStack.active = glm::rotate(modelStack.active, float(camera.xRot), glm::vec3(1.0f, 0.0f, 0.0f));
+	modelStack.active = glm::rotate(modelStack.active, float(camera.yRot), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	glLoadMatrixf(glm::value_ptr(modelStack.active));
+
+	worldFloor.draw(modelStack);
+
+
+	GLUquadric *c = gluNewQuadric();
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+	gluCylinder(c, 0.2, 0.0, 0.2, 16, 16);
+
+	modelStack.pop();
 
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
-void ReshapeFunc(GLint w, GLint h) {
+void reshapeFunc(GLint w, GLint h) {
 
 	if (h > 0) {
 		window.height = h;
@@ -52,7 +66,7 @@ void ReshapeFunc(GLint w, GLint h) {
 	}
 }
 
-void KeyboardFunc(unsigned char c, int x, int y) {
+void keyboardFunc(unsigned char c, int x, int y) {
 
 	switch (c) {
 	case 'x':
@@ -60,33 +74,34 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 		glutLeaveMainLoop();
 		return;
 	case 'w':
-		disk.xRot += 10;
+		camera.xRot += 2;
 		return;
 	case 's':
-		disk.xRot -= 10;
+		camera.xRot -= 2;
 		return;
 	case 'd':
-		disk.yRot += 10;
+		camera.yRot -= 2;
 		return;
 	case 'a':
-		disk.yRot -= 10;
+		camera.yRot += 2;
 		return;
 	}
 }
 
+
 int main(int argc, char * argv[]) {
+	runTests();
 
-	disk.xRot = 0;
-	disk.yRot = 0;
+	camera.xRot = 0;
+	camera.yRot = 0;
 
-	cout << "Hello World" << endl;
 	glutInit(&argc , argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(window.width , window.height);
-	window.handle = glutCreateWindow("Hello World");
-	glutDisplayFunc(DisplayFunc);
-	glutReshapeFunc(ReshapeFunc);
-	glutKeyboardFunc(KeyboardFunc);
+	window.handle = glutCreateWindow("Legacy Stool");
+	glutDisplayFunc(displayFunc);
+	glutReshapeFunc(reshapeFunc);
+	glutKeyboardFunc(keyboardFunc);
 
 	glutMainLoop();
 }
