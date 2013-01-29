@@ -98,6 +98,9 @@
     <ClInclude Include="Stool.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="notes.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

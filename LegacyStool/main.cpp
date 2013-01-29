@@ -4,104 +4,102 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> 
 
-#include "Tests.h"
-#include "MatrixStack.h"
-#include "Floor.h"
-
 using namespace std;
 
-struct WindowData {
+struct WindowData
+{
 	GLint height, width;
 	GLint handle;
+	bool wireframe;
 } window;
 
-struct Camera {
-	GLdouble xRot, yRot;
-} camera;
+void DisplayFunc()
+{
+	// How long have we been running (in seconds)?
+	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0;
 
-
-MatrixStack modelStack;
-Floor worldFloor;
-
-void displayFunc() {
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, window.wireframe ? GL_LINE : GL_FILL);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	glViewport(0, 0, window.width, window.height);
 	glMatrixMode(GL_PROJECTION);
 
+	/* These lines:
+		glLoadIdentity();
+		gluPerspective(30, double(window.width) / double(window.height), 1, 10);
+	   are identical in effect to these next two lines.
+	*/
 	glm::mat4 projection_matrix = glm::perspective(30.0f, float(window.width) / float(window.height), 1.0f, 10.0f);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
-	glViewport(0, 0, window.width, window.height);
 	glMatrixMode(GL_MODELVIEW);
 
-	modelStack.push();
+	/* These lines:
+		glLoadIdentity();
+		glTranslated(0, 0, -5);
+		glRotated(time * 90.0, 0, 1, 0);
+	   are identical in effect to these next three lines.
+	*/
+	glm::mat4 modelview_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+	modelview_matrix = glm::rotate(modelview_matrix, time * 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	glLoadMatrixf(glm::value_ptr(modelview_matrix));
 
-	// Camera transform
-	modelStack.active = glm::translate(modelStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
-	modelStack.active = glm::rotate(modelStack.active, float(camera.xRot), glm::vec3(1.0f, 0.0f, 0.0f));
-	modelStack.active = glm::rotate(modelStack.active, float(camera.yRot), glm::vec3(0.0f, 1.0f, 0.0f));
+	// This is a sample of using the glu Quadrics - you can draw any number of Quadrics using 
+	// the same GLUquadric structure. Remember to delete it when you're finished.
+	GLUquadric * q = gluNewQuadric();
+	glColor3d(1, 0, 0);
+	gluCylinder(q, 2.0, 0.0, 2.0, 30, 3);
+	glColor3d(0, 0, 1);
+	gluSphere(q, 1.0, 30, 30);
+	gluDeleteQuadric(q);
 
-	glLoadMatrixf(glm::value_ptr(modelStack.active));
-
-	worldFloor.draw(modelStack);
-
-
-	GLUquadric *c = gluNewQuadric();
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-	gluCylinder(c, 0.2, 0.0, 0.2, 16, 16);
-
-	modelStack.pop();
+	// Show an example of using a glut built-in shape. Note how I use the matrix to 
+	// alter the drawn shape of a 1 unit cube.
+	glColor3d(0.8706, 0.7126, 0.5294);
+	modelview_matrix = glm::scale(modelview_matrix, glm::vec3(2.5f, 0.25f, 0.25f));
+	glLoadMatrixf(glm::value_ptr(modelview_matrix));
+	glutSolidCube(1);
 
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
-void reshapeFunc(GLint w, GLint h) {
-
-	if (h > 0) {
+void ReshapeFunc(GLint w, GLint h)
+{
+	if (h > 0)
+	{
 		window.height = h;
 		window.width = w;
 	}
 }
 
-void keyboardFunc(unsigned char c, int x, int y) {
+void KeyboardFunc(unsigned char c, int x, int y)
+{
+	switch (c)
+	{
+	case 'w':
+		window.wireframe = !window.wireframe;
+		break;
 
-	switch (c) {
 	case 'x':
 	case 27:
 		glutLeaveMainLoop();
 		return;
-	case 'w':
-		camera.xRot += 2;
-		return;
-	case 's':
-		camera.xRot -= 2;
-		return;
-	case 'd':
-		camera.yRot -= 2;
-		return;
-	case 'a':
-		camera.yRot += 2;
-		return;
 	}
 }
 
-
-int main(int argc, char * argv[]) {
-	runTests();
-
-	camera.xRot = 0;
-	camera.yRot = 0;
-
+int main(int argc, char * argv[])
+{
+	cout << "Hello World" << endl;
 	glutInit(&argc , argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(window.width , window.height);
-	window.handle = glutCreateWindow("Legacy Stool");
-	glutDisplayFunc(displayFunc);
-	glutReshapeFunc(reshapeFunc);
-	glutKeyboardFunc(keyboardFunc);
+	window.handle = glutCreateWindow("Hello World - try the 'w' key");
+	window.wireframe = false;
+	glutDisplayFunc(DisplayFunc);
+	glutReshapeFunc(ReshapeFunc);
+	glutKeyboardFunc(KeyboardFunc);
 
 	glutMainLoop();
 }

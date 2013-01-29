@@ -4,6 +4,7 @@
 class Scene {
 
 public:
+	Scene(int stools);
 
 private:
 };

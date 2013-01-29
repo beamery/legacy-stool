@@ -19,10 +19,6 @@ void Floor::draw(MatrixStack &mViewStack) {
 	// save previous modelview matrix
 	mViewStack.push();
 
-	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(-1.8f, -0.8f, -1.8f));
-	mViewStack.active = glm::scale(mViewStack.active, glm::vec3(0.03f, 0.03f, 0.03f));
-	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-
 	for (int i = 0; i < GRID_SIZE - 1; i++) {
 		glBegin(GL_QUAD_STRIP);
 		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
@@ -35,5 +31,4 @@ void Floor::draw(MatrixStack &mViewStack) {
 
 	// restore previous modelview matrix
 	mViewStack.pop();
-	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 }
