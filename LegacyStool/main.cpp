@@ -50,7 +50,7 @@ void DisplayFunc()
 	mViewStack.push();
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, 15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	mViewStack.active = glm::rotate(mViewStack.active, time * 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, time * 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
 	scene.draw(mViewStack);

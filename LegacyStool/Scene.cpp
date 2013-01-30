@@ -2,8 +2,8 @@
 
 Scene::Scene(int stoolCount) {
 	for (int i = 0; i < stoolCount; i++) {
-		int x = rand() % 120;
-		int z = rand() % 120;
+		float x = float(rand() % 120);
+		float z = float(rand() % 120);
 		Stool s(x, z);
 		stools.push_back(s);
 	}
@@ -18,7 +18,9 @@ void Scene::draw(MatrixStack &mViewStack) {
 	mViewStack.active = glm::scale(
 		mViewStack.active, 
 		glm::vec3(SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR));
-	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(-60.0f, -20.0f, -60.0f));
+	mViewStack.active = glm::translate(
+		mViewStack.active, 
+		glm::vec3(-60.0f, -20.0f, -60.0f));
 
 	// draw the floor
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));

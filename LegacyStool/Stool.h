@@ -20,7 +20,7 @@ class Stool	{
 
 public:
 	// initialize stool with the given position
-	Stool(float x = 0, float z = 0);
+	Stool(float x = 0.0f, float z = 0.0f);
 
 	// return stool position as a glm::vec3
 	glm::vec3 getPos() const;
