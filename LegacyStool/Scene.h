@@ -1,6 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#define SCENE_SCALE_FACTOR 0.025f
+
 #include <iostream>
 #include <vector>
 #include <gl/freeglut.h>

@@ -9,3 +9,8 @@ Basic Flow of Rendering
 - Scene renders Floor
   - Keep the transforms for Floor when rendering Stools
 - Scene then renders Stools, using the positions as offsets on the Floor
+
+
+Possible Extras
+---------------
+- Move camera with mouse

@@ -1,7 +1,7 @@
 #ifndef FLOOR_H
 #define FLOOR_H
 
-#define GRID_SIZE 20
+#define GRID_SIZE 21
 
 #include <gl/freeglut.h>
 #include "MatrixStack.h"

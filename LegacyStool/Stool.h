@@ -1,6 +1,13 @@
 #ifndef STOOL_H
 #define STOOL_H
 
+// All measurements in inches
+#define STOOL_HEIGHT 13.0f
+#define SEAT_THICKNESS 1.0f
+#define SEAT_DIAM 11.75f
+#define STEM_LENGTH 12.0f
+#define STEM_DIAM 1.0f
+
 #include <iostream>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
@@ -25,7 +32,9 @@ public:
 	void print() const;
 
 private:
+	void drawSeatAndStem(MatrixStack &mViewStack);
 	glm::vec3 pos;
+	float heightAdjust;
 };
 
 

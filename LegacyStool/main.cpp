@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp> 
 #include "Tests.h"
 #include "Scene.h"
+#include "MatrixStack.h"
 
 using namespace std;
 
@@ -15,10 +16,13 @@ struct WindowData
 	bool wireframe;
 } window;
 
+Scene scene(5);
+MatrixStack mViewStack;
+
 void DisplayFunc()
 {
 	// How long have we been running (in seconds)?
-	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0;
+	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, window.wireframe ? GL_LINE : GL_FILL);
@@ -43,25 +47,35 @@ void DisplayFunc()
 		glRotated(time * 90.0, 0, 1, 0);
 	   are identical in effect to these next three lines.
 	*/
-	glm::mat4 modelview_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-	modelview_matrix = glm::rotate(modelview_matrix, time * 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	glLoadMatrixf(glm::value_ptr(modelview_matrix));
+	mViewStack.push();
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, 15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, time * 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+
+	scene.draw(mViewStack);
 
 	// This is a sample of using the glu Quadrics - you can draw any number of Quadrics using 
 	// the same GLUquadric structure. Remember to delete it when you're finished.
+	/*
 	GLUquadric * q = gluNewQuadric();
 	glColor3d(1, 0, 0);
 	gluCylinder(q, 2.0, 0.0, 2.0, 30, 3);
 	glColor3d(0, 0, 1);
 	gluSphere(q, 1.0, 30, 30);
 	gluDeleteQuadric(q);
+	*/
 
 	// Show an example of using a glut built-in shape. Note how I use the matrix to 
 	// alter the drawn shape of a 1 unit cube.
+	/*
 	glColor3d(0.8706, 0.7126, 0.5294);
 	modelview_matrix = glm::scale(modelview_matrix, glm::vec3(2.5f, 0.25f, 0.25f));
 	glLoadMatrixf(glm::value_ptr(modelview_matrix));
 	glutSolidCube(1);
+	*/
+
+	mViewStack.pop();
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -83,7 +97,6 @@ void KeyboardFunc(unsigned char c, int x, int y)
 	case 'w':
 		window.wireframe = !window.wireframe;
 		break;
-
 	case 'x':
 	case 27:
 		glutLeaveMainLoop();
