@@ -42,7 +42,7 @@ void Floor::draw(MatrixStack &mViewStack) {
 	glLineWidth(1.0f);
 	for (int i = 0; i < GRID_SIZE - 1; i++) {
 		glBegin(GL_LINE_LOOP);
-		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+		glColor4f(0.6f, 0.6f, 0.6f, 1.0f);
 		for (int j = 0; j < GRID_SIZE - 1; j++) {
 			glVertex4f(grid[i][j].x, 0.0f, grid[i][j].z, 1.0f);
 			glVertex4f(grid[i+1][j].x, 0.0f, grid[i+1][j].z, 1.0f);
