@@ -1,7 +1,7 @@
 #include "Stool.h"
 
 Stool::Stool(float x, float z)  : 
-	pos(glm::vec3(x, 0.0f, z)), heightAdjust(0.0f) {}
+	pos(glm::vec3(x, 0.0f, z)), heightAdjust(1.0f) {}
 
 glm::vec3 Stool::getPos() const {
 	return pos;
@@ -22,18 +22,33 @@ void Stool::draw(MatrixStack &mViewStack) {
 	
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, STOOL_HEIGHT, 0.0f));
 	
+	// seat and stem rendering
 	mViewStack.push();
 	// used in height adjustment controls
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, heightAdjust, 0.0f));
 	drawSeatAndStem(mViewStack);
 	mViewStack.pop();
 
+	// leg rendering
+	drawLeg(mViewStack, 0);
+	drawLeg(mViewStack, 90);
+	drawLeg(mViewStack, 180);
+	drawLeg(mViewStack, 270);
+
 	mViewStack.pop();
 }
+
+void Stool::adjustHeight(float amount) {
+	heightAdjust += amount;
+	heightAdjust = max(0.0f, heightAdjust);
+	heightAdjust = min(heightAdjust, 4.375f);
+}
+
 
 void Stool::print() const {
 	cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")";
 }
+
 
 void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.push();
@@ -75,12 +90,50 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
 	glColor4f(0.5f, 0.5f, 1.0f, 1.0f);
-	gluCylinder(q, STEM_DIAM / 2, STEM_DIAM / 2, STEM_LENGTH, 32, 1); 
+	gluCylinder(q, STEM_DIAM / 2, STEM_DIAM / 2, STEM_LENGTH, 10, 1); 
 	mViewStack.pop();
-
 
 	mViewStack.pop();
 
 	gluDeleteQuadric(q);
+}
 
+/*
+ * Draws one leg of the stool. The shear pushes the foot of the leg out 
+ * in the positive x direction.
+ * 
+ * Note: the shear factor must have LEG_LENGTH / 2 added to its denominator
+ * because the center of the leg is viewed as y = 0 at the time it is sheared.
+ */
+void Stool::drawLeg(MatrixStack &mViewStack, float rotation) {
+	glm::mat4 shearMat;
+	glm::vec4 shearVec(-SHEAR_DIST / (LEG_LENGTH), 1.0f, 0.0f, 0.0f);
+	shearMat[1] = shearVec;
+
+	mViewStack.push();
+
+	// rotate the leg to position it on the stool
+	mViewStack.active = glm::rotate(mViewStack.active, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	// get basic leg shape
+	
+	// stretch it, position it on the ground and shear it
+	mViewStack.active = mViewStack.active * shearMat;
+	mViewStack.active = glm::translate(mViewStack.active,  
+		glm::vec3(LEG_HORIZ_OFFSET - SHEAR_DIST, -STOOL_HEIGHT + LEG_LENGTH / 2, 0.0f));
+	mViewStack.active = glm::scale(mViewStack.active, 
+		glm::vec3(LEG_THICKNESS, LEG_LENGTH, LEG_THICKNESS));
+
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glColor4f(0.4f, 0.9f, 0.4f, 1.0f);
+	glutSolidCube(1);
+
+	mViewStack.pop();
+
+	/*glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, -10.0f, 0.0f);
+	glVertex3f(LEG_HORIZ_OFFSET, 1.0f, 0.0f);
+	glVertex3f(LEG_HORIZ_OFFSET, -40.0f, 0.0f);
+	glEnd();*/
 }

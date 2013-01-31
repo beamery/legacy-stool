@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#define SCENE_SCALE_FACTOR 0.025f
+#define SCENE_SCALE_FACTOR 0.03f
 
 #include <iostream>
 #include <vector>
@@ -25,11 +25,13 @@ public:
 	// Draw the whole scene (floor, stools)
 	void draw(MatrixStack &mViewStack);
 
+	void adjustStoolHeights(float amount);
+
 	// Print the stools contained in this scene
 	void print() const;
 
 private:
-	Floor floor;
+	Floor sceneFloor;
 	vector<Stool> stools;
 };
 

@@ -55,26 +55,6 @@ void DisplayFunc()
 
 	scene.draw(mViewStack);
 
-	// This is a sample of using the glu Quadrics - you can draw any number of Quadrics using 
-	// the same GLUquadric structure. Remember to delete it when you're finished.
-	/*
-	GLUquadric * q = gluNewQuadric();
-	glColor3d(1, 0, 0);
-	gluCylinder(q, 2.0, 0.0, 2.0, 30, 3);
-	glColor3d(0, 0, 1);
-	gluSphere(q, 1.0, 30, 30);
-	gluDeleteQuadric(q);
-	*/
-
-	// Show an example of using a glut built-in shape. Note how I use the matrix to 
-	// alter the drawn shape of a 1 unit cube.
-	/*
-	glColor3d(0.8706, 0.7126, 0.5294);
-	modelview_matrix = glm::scale(modelview_matrix, glm::vec3(2.5f, 0.25f, 0.25f));
-	glLoadMatrixf(glm::value_ptr(modelview_matrix));
-	glutSolidCube(1);
-	*/
-
 	mViewStack.pop();
 
 	glutSwapBuffers();
@@ -94,6 +74,12 @@ void KeyboardFunc(unsigned char c, int x, int y)
 {
 	switch (c)
 	{
+	case 'j':
+		scene.adjustStoolHeights(-0.1f);
+		break;
+	case 'k':
+		scene.adjustStoolHeights(0.1f);
+		break;
 	case 'w':
 		window.wireframe = !window.wireframe;
 		break;
