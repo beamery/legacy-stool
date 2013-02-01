@@ -1,7 +1,7 @@
 #include "Scene.h"
 
 Scene::Scene(int stoolCount) {
-	//stools.push_back(Stool(60.0f, 60.0f));
+	stools.push_back(Stool(60.0f, 60.0f));
 	for (int i = 0; i < stoolCount; i++) {
 		float x = float(rand() % int(floor(110 - LEG_HORIZ_OFFSET)));
 		float z = float(rand() % int(floor(110 - LEG_HORIZ_OFFSET)));

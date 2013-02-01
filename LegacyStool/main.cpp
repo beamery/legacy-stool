@@ -7,20 +7,21 @@
 #include "Scene.h"
 #include "MatrixStack.h"
 
+#define DEFAULT_FOV 30.0f
+
 using namespace std;
 
-struct WindowData
-{
+struct WindowData {
 	GLint height, width;
 	GLint handle;
 	bool wireframe;
+	float fov, rotX, rotY;
 } window;
 
-Scene scene(5);
+Scene scene(0);
 MatrixStack mViewStack;
 
-void DisplayFunc()
-{
+void DisplayFunc() {
 	// How long have we been running (in seconds)?
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 
@@ -36,7 +37,7 @@ void DisplayFunc()
 		gluPerspective(30, double(window.width) / double(window.height), 1, 10);
 	   are identical in effect to these next two lines.
 	*/
-	glm::mat4 projection_matrix = glm::perspective(30.0f, float(window.width) / float(window.height), 1.0f, 10.0f);
+	glm::mat4 projection_matrix = glm::perspective(window.fov, float(window.width) / float(window.height), 1.0f, 10.0f);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -48,9 +49,16 @@ void DisplayFunc()
 	   are identical in effect to these next three lines.
 	*/
 	mViewStack.push();
+
+	// set up basic camera position and orientation
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
-	mViewStack.active = glm::rotate(mViewStack.active, 15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	mViewStack.active = glm::rotate(mViewStack.active, time * 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, 20.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	//mViewStack.active = glm::rotate(mViewStack.active, time * 30.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	// user controlled rotations
+	mViewStack.active = glm::rotate(mViewStack.active, window.rotX, glm::vec3(1.0f, 0.0f, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, window.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
+
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
 	scene.draw(mViewStack);
@@ -61,8 +69,7 @@ void DisplayFunc()
 	glutPostRedisplay();
 }
 
-void ReshapeFunc(GLint w, GLint h)
-{
+void ReshapeFunc(GLint w, GLint h) {
 	if (h > 0)
 	{
 		window.height = h;
@@ -70,10 +77,14 @@ void ReshapeFunc(GLint w, GLint h)
 	}
 }
 
-void KeyboardFunc(unsigned char c, int x, int y)
-{
-	switch (c)
-	{
+void KeyboardFunc(unsigned char c, int x, int y) {
+	switch (c) {
+	case 'i':
+		window.fov--;
+		break;
+	case 'o':
+		window.fov++;
+		break;
 	case 'j':
 		scene.adjustStoolHeights(-0.1f);
 		break;
@@ -90,8 +101,27 @@ void KeyboardFunc(unsigned char c, int x, int y)
 	}
 }
 
-int main(int argc, char * argv[])
-{
+void SpecialFunc(int c, int x, int y) {
+	switch (c) {
+	case GLUT_KEY_UP:
+		window.rotX--;
+		break;
+	case GLUT_KEY_DOWN:
+		window.rotX++;
+		break;
+	case GLUT_KEY_LEFT:
+		window.rotY--;
+		break;
+	case GLUT_KEY_RIGHT:
+		window.rotY++;
+		break;
+	}
+}
+
+int main(int argc, char * argv[]) {
+	window.fov = DEFAULT_FOV;
+	window.rotX = 0.0f;
+	window.rotY = 0.0f;
 	runTests();
 
 	glutInit(&argc , argv);
@@ -102,6 +132,7 @@ int main(int argc, char * argv[])
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);
+	glutSpecialFunc(SpecialFunc);
 
 	glutMainLoop();
 }

@@ -68,4 +68,9 @@
       <Filter>Docs</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="features.md">
+      <Filter>Docs</Filter>
+    </None>
+  </ItemGroup>
 </Project>

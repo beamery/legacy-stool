@@ -3,15 +3,24 @@
 
 // All measurements in inches
 #define STOOL_HEIGHT 24.75f
-#define SEAT_THICKNESS 0.7f
+
+#define SEAT_THICKNESS 0.5f
 #define SEAT_DIAM 11.75f
-#define STEM_LENGTH 12.0f
+#define STEM_LENGTH 10.5f
 #define STEM_DIAM 1.05f
 
 #define LEG_LENGTH 23.75f
 #define LEG_THICKNESS 1.25f
 #define LEG_HORIZ_OFFSET 8.8125f
 #define SHEAR_DIST 5.98f
+
+#define RING_OUTER_RAD 6.40f
+#define RING_THICKNESS 0.35f
+#define RING_HEIGHT 7.0f
+
+#define TOP_DISK_RAD 2.8f
+#define BOT_DISK_RAD 3.3f
+#define DISK_THICKNESS 0.8f
 
 #include <iostream>
 #include <gl/freeglut.h>
@@ -42,6 +51,8 @@ public:
 private:
 	void drawSeatAndStem(MatrixStack &mViewStack);
 	void drawLeg(MatrixStack &mViewStack, float rotation);
+	void drawRing(MatrixStack &mViewStack);
+	void drawDisk(MatrixStack &mViewStack, float radius, float height);
 	glm::vec3 pos;
 	float heightAdjust;
 };

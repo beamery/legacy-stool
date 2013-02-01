@@ -1,7 +1,7 @@
 #include "Stool.h"
 
 Stool::Stool(float x, float z)  : 
-	pos(glm::vec3(x, 0.0f, z)), heightAdjust(1.0f) {}
+	pos(glm::vec3(x, 0.0f, z)), heightAdjust(0.0f) {}
 
 glm::vec3 Stool::getPos() const {
 	return pos;
@@ -20,6 +20,7 @@ glm::vec3 Stool::getPos() const {
 void Stool::draw(MatrixStack &mViewStack) {
 	mViewStack.push();
 	
+	// position stool with feet on the floor
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, STOOL_HEIGHT, 0.0f));
 	
 	// seat and stem rendering
@@ -34,6 +35,13 @@ void Stool::draw(MatrixStack &mViewStack) {
 	drawLeg(mViewStack, 90);
 	drawLeg(mViewStack, 180);
 	drawLeg(mViewStack, 270);
+
+	// draw lower ring
+	drawRing(mViewStack);
+
+	// draw upper disks
+	drawDisk(mViewStack, TOP_DISK_RAD, 23.75f);
+	drawDisk(mViewStack, BOT_DISK_RAD, 21.25f);
 
 	mViewStack.pop();
 }
@@ -50,6 +58,10 @@ void Stool::print() const {
 }
 
 
+/* 
+ * Draws the seat and seat stem. These have adjustable height, changed with
+ * the J and K keys.
+ */
 void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.push();
 	// puts top of stool seat at height 0
@@ -57,9 +69,9 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
 	GLUquadric *q = gluNewQuadric();
-	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	glColor4f(0.2f, 0.7f, 0.7f, 1.0f);
 	// divide by 2 to get radius
-	gluCylinder(q, SEAT_DIAM / 2, SEAT_DIAM / 2, SEAT_THICKNESS, 32, 4); 
+	gluCylinder(q, SEAT_DIAM / 2, SEAT_DIAM / 2, SEAT_THICKNESS, 32, 1); 
 	mViewStack.pop();
 
 	// draw top of stool seat
@@ -68,8 +80,8 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
-	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-	gluDisk(q, 0, SEAT_DIAM / 2, 32, 4); // divide by 2 to get radius
+	glColor4f(0.3f, 0.8f, 0.8f, 1.0f);
+	gluDisk(q, 0, SEAT_DIAM / 2, 32, 1); // divide by 2 to get radius
 	mViewStack.pop();
 
 	// draw bottom of stool seat
@@ -78,7 +90,7 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
-	glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
+	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
 	gluDisk(q, 0, SEAT_DIAM / 2, 32, 1); // divide by 2 to get radius
 	mViewStack.pop();
 
@@ -89,7 +101,7 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
-	glColor4f(0.5f, 0.5f, 1.0f, 1.0f);
+	glColor4f(0.2f, 0.7f, 0.7f, 1.0f);
 	gluCylinder(q, STEM_DIAM / 2, STEM_DIAM / 2, STEM_LENGTH, 10, 1); 
 	mViewStack.pop();
 
@@ -114,7 +126,6 @@ void Stool::drawLeg(MatrixStack &mViewStack, float rotation) {
 
 	// rotate the leg to position it on the stool
 	mViewStack.active = glm::rotate(mViewStack.active, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-	// get basic leg shape
 	
 	// stretch it, position it on the ground and shear it
 	mViewStack.active = mViewStack.active * shearMat;
@@ -124,7 +135,7 @@ void Stool::drawLeg(MatrixStack &mViewStack, float rotation) {
 		glm::vec3(LEG_THICKNESS, LEG_LENGTH, LEG_THICKNESS));
 
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-	glColor4f(0.4f, 0.9f, 0.4f, 1.0f);
+	glColor4f(0.4f, 0.8f, 0.4f, 1.0f);
 	glutSolidCube(1);
 
 	mViewStack.pop();
@@ -136,4 +147,71 @@ void Stool::drawLeg(MatrixStack &mViewStack, float rotation) {
 	glVertex3f(LEG_HORIZ_OFFSET, 1.0f, 0.0f);
 	glVertex3f(LEG_HORIZ_OFFSET, -40.0f, 0.0f);
 	glEnd();*/
+}
+
+/*
+ * Draws the ring in the lower portion of the stool.
+ *
+ * Note: Inner radius of the ring actually specifies the thickness of the ring.
+ * Outer radius specifies the radius of the ring itself
+ */
+void Stool::drawRing(MatrixStack &mViewStack) {
+	mViewStack.push();
+
+	// perform transformations on the torus
+	mViewStack.active = glm::translate(mViewStack.active, 
+		glm::vec3(0.0f, -(STOOL_HEIGHT - RING_HEIGHT), 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	GLUquadric *q = gluNewQuadric();
+	glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
+	glutSolidTorus(RING_THICKNESS, RING_OUTER_RAD, 10, 20);
+
+	mViewStack.pop();
+}
+
+/*
+ * Draws the two disk-like objects near the top of the stool.
+ * This process is very similar to drawing the seat.
+ */
+void Stool::drawDisk(MatrixStack &mViewStack, float radius, float height) {
+	mViewStack.push();
+
+	// position disk vertically
+	mViewStack.active = glm::translate(mViewStack.active, 
+		glm::vec3(0.0f, - STOOL_HEIGHT + height, 0.0f));
+
+	mViewStack.push();
+	
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	// draw cylinder composing the sides of the disk
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	GLUquadric *q = gluNewQuadric();
+	glColor4f(0.6f, 0.6f, 1.0f, 1.0f);
+	gluCylinder(q, radius, radius, DISK_THICKNESS, 32, 1); 
+	mViewStack.pop();
+
+	// draw top of disk
+	// no translation needed since top is at height 0
+	mViewStack.push();
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+
+	glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
+	gluDisk(q, STEM_DIAM / 2, radius, 32, 1); // divide by 2 to get radius
+	mViewStack.pop();
+
+	// draw bottom of disk
+	mViewStack.push();
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -DISK_THICKNESS, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+
+	glColor4f(0.3f, 0.3f, 1.0f, 1.0f);
+	gluDisk(q, STEM_DIAM / 2, radius, 32, 1); // divide by 2 to get radius
+	gluDeleteQuadric(q);
+	mViewStack.pop();
+	mViewStack.pop();
 }

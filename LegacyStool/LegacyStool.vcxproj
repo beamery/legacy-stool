@@ -101,6 +101,9 @@
   <ItemGroup>
     <Text Include="notes.md" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="features.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
