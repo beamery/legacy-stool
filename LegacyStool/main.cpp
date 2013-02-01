@@ -52,7 +52,6 @@ void DisplayFunc() {
 
 	// set up basic camera position and orientation
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, -5.0f));
-	mViewStack.active = glm::rotate(mViewStack.active, 20.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	//mViewStack.active = glm::rotate(mViewStack.active, time * 30.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// user controlled rotations
@@ -104,23 +103,25 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 void SpecialFunc(int c, int x, int y) {
 	switch (c) {
 	case GLUT_KEY_UP:
-		window.rotX--;
+		window.rotX++;
+		window.rotX = min(window.rotX + 1, 89.0f);
 		break;
 	case GLUT_KEY_DOWN:
-		window.rotX++;
+		window.rotX--;
+		window.rotX = max(window.rotX - 1, -89.0f);
 		break;
 	case GLUT_KEY_LEFT:
-		window.rotY--;
+		window.rotY++;
 		break;
 	case GLUT_KEY_RIGHT:
-		window.rotY++;
+		window.rotY--;
 		break;
 	}
 }
 
 int main(int argc, char * argv[]) {
 	window.fov = DEFAULT_FOV;
-	window.rotX = 0.0f;
+	window.rotX = 20.0f;
 	window.rotY = 0.0f;
 	runTests();
 

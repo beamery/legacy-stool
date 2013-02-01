@@ -105,6 +105,17 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	gluCylinder(q, STEM_DIAM / 2, STEM_DIAM / 2, STEM_LENGTH, 10, 1); 
 	mViewStack.pop();
 
+	mViewStack.push();
+	mViewStack.active = glm::translate(mViewStack.active, 
+		glm::vec3(0.0f, -SEAT_THICKNESS - STEM_LENGTH, 0.0f));
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
+	gluDisk(q, 0.0, STEM_DIAM / 2, 32, 1); 
+
+	mViewStack.pop();
+
 	mViewStack.pop();
 
 	gluDeleteQuadric(q);
