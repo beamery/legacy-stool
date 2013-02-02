@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#define SCENE_SCALE_FACTOR 0.03f
+#define INCHES_PER_WORLD_UNIT 0.03f
 
 #include <iostream>
 #include <vector>

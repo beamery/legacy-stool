@@ -17,9 +17,9 @@ void Scene::draw(MatrixStack &mViewStack) {
 
 	// set up floor transformations
 	mViewStack.active = glm::scale(mViewStack.active, 
-		glm::vec3(SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR));
+		glm::vec3(INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT));
 	mViewStack.active = glm::translate(mViewStack.active, 
-		glm::vec3(-60.0f, -20.0f, -60.0f));
+		glm::vec3(-60.0f, 0.0f, -60.0f));
 
 	// draw the floor
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
