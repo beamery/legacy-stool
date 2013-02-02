@@ -7,24 +7,28 @@
 #include "Scene.h"
 #include "MatrixStack.h"
 
-#define DEFAULT_FOV 30.0f
-#define CAMERA_DIST 1.9f
+#define DEFAULT_FOV 45.0f
+#define CAMERA_DIST 3.0f
+#define CAMERA_HEIGHT 1.0f
+#define CAMERA_ZNEAR 0.5f
+#define CAMERA_ZFAR 4.0f
 
 using namespace std;
 
 void DrawCamera(MatrixStack &mViewStack);
+void DrawFrustum(MatrixStack &mViewStack);
 
 struct WindowData {
 	GLint height, width;
 	GLint handle;
 	bool wireframe;
-	float fov, rotX, rotY;
+	float fov, rotX, rotY, aspect;
 } fpWin;
-
 WindowData tpWin;
 
-Scene scene(0);
+Scene scene(1);
 MatrixStack mViewStack;
+const float PI = atan(1) * 4;
 
 void DisplayFunc() {
 	// How long have we been running (in seconds)?
@@ -37,7 +41,9 @@ void DisplayFunc() {
 	glViewport(0, 0, fpWin.width, fpWin.height);
 	glMatrixMode(GL_PROJECTION);
 
-	glm::mat4 projection_matrix = glm::perspective(fpWin.fov, float(fpWin.width) / float(fpWin.height), 1.0f, 10.0f);
+	fpWin.aspect = float(fpWin.width) / float(fpWin.height);
+	glm::mat4 projection_matrix = glm::perspective(
+		fpWin.fov, fpWin.aspect, CAMERA_ZNEAR, CAMERA_ZFAR);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -73,7 +79,8 @@ void TPDisplayFunc() {
 	glViewport(0, 0, tpWin.width, tpWin.height);
 	glMatrixMode(GL_PROJECTION);
 
-	glm::mat4 projection_matrix = glm::perspective(tpWin.fov, float(tpWin.width) / float(tpWin.height), 1.0f, 100.0f);
+	glm::mat4 projection_matrix = glm::perspective(
+		tpWin.fov, float(tpWin.width) / float(tpWin.height), 1.0f, 100.0f);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -81,7 +88,7 @@ void TPDisplayFunc() {
 	mViewStack.push();
 
 	// position entire system
-	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -1.0f, -3 * CAMERA_DIST));
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -1.0f, -2.5 * CAMERA_DIST));
 
 	// perform camera rotations
 	mViewStack.active = glm::rotate(mViewStack.active, -fpWin.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -91,6 +98,7 @@ void TPDisplayFunc() {
 	// pull the camera back from the scene
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, CAMERA_DIST));
 	DrawCamera(mViewStack);
+	DrawFrustum(mViewStack);
 	mViewStack.pop();
 
 	// reverse camera rotations for the scene (allows it to be statically oriented)
@@ -113,30 +121,70 @@ void DrawCamera(MatrixStack &mViewStack) {
 	mViewStack.push();
 	mViewStack.active = glm::scale(mViewStack.active, 
 		glm::vec3(INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT));
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, 3.0f));
 
 	// draw axes
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 	glBegin(GL_LINES);
 	// x
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(15.0f, 0.0f, 0.0f);
+	glVertex3f(10.0f, 0.0f, 0.0f);
 	// y
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(.0f, 15.0f, 0.0f);
+	glVertex3f(0.0f, 10.0f, 0.0f);
 	// z
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 15.0f);
+	glVertex3f(0.0f, 0.0f, 10.0f);
 	glEnd();
+
 
 	mViewStack.active = glm::scale(mViewStack.active, glm::vec3(1.0f, 1.0f, 2.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-	glColor4f(0.6f, 0.6f, 1.0f, 1.0f);
-	glutSolidCube(5);
+	glColor4f(0.6f, 0.6f, 0.6f, 1.0f);
+	glutSolidCube(3);
 	mViewStack.pop();
 }
 
+void DrawFrustum(MatrixStack &mViewStack) {
+	mViewStack.push();
+	float fovRadians = fpWin.fov * (2 * PI / 360);
+	//cout << fovRadians / PI << endl;
+
+	float yNear = CAMERA_ZNEAR * tan(fovRadians / 2);
+	float xNear = fpWin.aspect * yNear;
+	float yFar = CAMERA_ZFAR * tan(fovRadians / 2);
+	float xFar = fpWin.aspect * yFar;
+
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(xNear, yNear, -CAMERA_ZNEAR);
+	glVertex3f(-xNear, yNear, -CAMERA_ZNEAR);
+	glVertex3f(-xNear, -yNear, -CAMERA_ZNEAR);
+	glVertex3f(xNear, -yNear, -CAMERA_ZNEAR);
+	glEnd();
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(xFar, yFar, -CAMERA_ZFAR);
+	glVertex3f(-xFar, yFar, -CAMERA_ZFAR);
+	glVertex3f(-xFar, -yFar, -CAMERA_ZFAR);
+	glVertex3f(xFar, -yFar, -CAMERA_ZFAR);
+	glEnd();
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(xFar, yFar, -CAMERA_ZFAR);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(-xFar, yFar, -CAMERA_ZFAR);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(-xFar, -yFar, -CAMERA_ZFAR);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(xFar, -yFar, -CAMERA_ZFAR);
+	glEnd();
+
+	mViewStack.pop();
+}
 
 
 
