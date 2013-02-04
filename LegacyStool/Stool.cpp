@@ -1,7 +1,7 @@
 #include "Stool.h"
 
-Stool::Stool(float x, float z)  : 
-	pos(glm::vec3(x, 0.0f, z)), heightAdjust(0.0f) {}
+Stool::Stool(glm::vec3 position)  : 
+	pos(position), heightAdjust(0.0f) {}
 
 glm::vec3 Stool::getPos() const {
 	return pos;

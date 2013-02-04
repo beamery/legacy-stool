@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #define INCHES_PER_WORLD_UNIT 0.03f
+#define STOOL_OFFSET 30.0f
 
 #include <iostream>
 #include <vector>
@@ -12,6 +13,7 @@
 #include "MatrixStack.h"
 #include "Stool.h"
 #include "Floor.h"
+#include "Table.h"
 
 using namespace std;
 
@@ -23,7 +25,7 @@ public:
 	Scene(int stoolCount);
 
 	// Draw the whole scene (floor, stools)
-	void draw(MatrixStack &mViewStack);
+	void draw(MatrixStack &mViewStack, bool hasTable = false);
 
 	void adjustStoolHeights(float amount);
 
@@ -33,6 +35,7 @@ public:
 private:
 	Floor sceneFloor;
 	vector<Stool> stools;
+	Table table;
 };
 
 

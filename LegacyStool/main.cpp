@@ -21,14 +21,14 @@ void DrawFrustum(MatrixStack &mViewStack);
 struct WindowData {
 	GLint height, width;
 	GLint handle;
-	bool wireframe;
+	bool wireframe, tableRender;
 	float fov, rotX, rotY, aspect;
 } fpWin;
 WindowData tpWin;
 
 Scene scene(1);
 MatrixStack mViewStack;
-const float PI = atan(1) * 4;
+const float PI = atan(1) * 4.0f;
 
 void DisplayFunc() {
 	// How long have we been running (in seconds)?
@@ -59,7 +59,7 @@ void DisplayFunc() {
 
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
-	scene.draw(mViewStack);
+	scene.draw(mViewStack, fpWin.tableRender);
 
 	mViewStack.pop();
 
@@ -106,7 +106,7 @@ void TPDisplayFunc() {
 	mViewStack.active = glm::rotate(mViewStack.active, fpWin.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-	scene.draw(mViewStack);
+	scene.draw(mViewStack, fpWin.tableRender);
 
 	mViewStack.pop();
 
@@ -205,6 +205,9 @@ void TPReshapeFunc(GLint w, GLint h) {
 
 void KeyboardFunc(unsigned char c, int x, int y) {
 	switch (c) {
+	case 't':
+		fpWin.tableRender = !fpWin.tableRender;
+		break;
 	case 'i':
 		fpWin.fov--;
 		break;
@@ -257,6 +260,7 @@ int main(int argc, char * argv[]) {
 	glutInitWindowSize(fpWin.width , fpWin.height);
 	fpWin.handle = glutCreateWindow("Legacy Stool - First Person");
 	fpWin.wireframe = false;
+	fpWin.tableRender = true;
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);
@@ -265,8 +269,7 @@ int main(int argc, char * argv[]) {
 	tpWin.fov = DEFAULT_FOV;
 	tpWin.rotX = 0.0f;
 	tpWin.rotY = 0.0f;
-	fpWin.handle = glutCreateWindow("Legacy Stool - Third Person");
-	fpWin.wireframe = false;
+	tpWin.handle = glutCreateWindow("Legacy Stool - Third Person");
 	glutDisplayFunc(TPDisplayFunc);
 	glutReshapeFunc(TPReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);

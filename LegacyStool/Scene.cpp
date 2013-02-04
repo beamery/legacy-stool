@@ -1,16 +1,28 @@
 #include "Scene.h"
 
-Scene::Scene(int stoolCount) {
-	stools.push_back(Stool(60.0f, 60.0f));
-	for (int i = 0; i < stoolCount; i++) {
+Scene::Scene(int stoolCount) : 
+	table(Table(glm::vec3(60.0f, 0.0f, 60.0f))) {
+
+	if (stoolCount >= 1) {
+		stools.push_back(
+			Stool(glm::vec3(60.0f + STOOL_OFFSET, 0.0f, 60.0f)));
+		stools.push_back(
+			Stool(glm::vec3(60.0f - STOOL_OFFSET, 0.0f, 60.0f)));
+		stools.push_back(
+			Stool(glm::vec3(60.0f, 0.0f, 60.0f + STOOL_OFFSET)));
+		stools.push_back(
+			Stool(glm::vec3(60.0f, 0.0f, 60.0f - STOOL_OFFSET)));
+	}
+
+	for (int i = 0; i < stoolCount - 1; i++) {
 		float x = float(rand() % int(floor(110 - LEG_HORIZ_OFFSET)));
 		float z = float(rand() % int(floor(110 - LEG_HORIZ_OFFSET)));
-		Stool s(x, z);
+		Stool s(glm::vec3(x, 0.0f, z));
 		stools.push_back(s);
 	}
 }
 
-void Scene::draw(MatrixStack &mViewStack) {
+void Scene::draw(MatrixStack &mViewStack, bool hasTable) {
 
 	// save previous transformation matrix
 	mViewStack.push();
@@ -30,9 +42,16 @@ void Scene::draw(MatrixStack &mViewStack) {
 		mViewStack.push();
 
 		mViewStack.active = glm::translate(mViewStack.active, i->getPos());
-		glLoadMatrixf(glm::value_ptr(mViewStack.active));
 		i->draw(mViewStack);
 
+		mViewStack.pop();
+	}
+
+	// optionally draw a table
+	if (hasTable) {
+		mViewStack.push();
+		mViewStack.active = glm::translate(mViewStack.active, table.getPos());
+		table.draw(mViewStack);
 		mViewStack.pop();
 	}
 
