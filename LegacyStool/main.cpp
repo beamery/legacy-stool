@@ -260,7 +260,7 @@ int main(int argc, char * argv[]) {
 	glutInitWindowSize(fpWin.width , fpWin.height);
 	fpWin.handle = glutCreateWindow("Legacy Stool - First Person");
 	fpWin.wireframe = false;
-	fpWin.tableRender = true;
+	fpWin.tableRender = false;
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);

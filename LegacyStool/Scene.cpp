@@ -12,6 +12,8 @@ Scene::Scene(int stoolCount) :
 			Stool(glm::vec3(60.0f, 0.0f, 60.0f + STOOL_OFFSET)));
 		stools.push_back(
 			Stool(glm::vec3(60.0f, 0.0f, 60.0f - STOOL_OFFSET)));
+		stools.push_back(
+			Stool(glm::vec3(20.0f, 0.0f, 20.0f)));
 	}
 
 	for (int i = 0; i < stoolCount - 1; i++) {
