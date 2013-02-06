@@ -7,11 +7,11 @@
 #include "Scene.h"
 #include "MatrixStack.h"
 
-#define DEFAULT_FOV 45.0f
-#define CAMERA_DIST 3.0f
+#define DEFAULT_FOV 50.0f
+#define CAMERA_DIST 4.0f
 #define CAMERA_HEIGHT 1.0f
 #define CAMERA_ZNEAR 0.5f
-#define CAMERA_ZFAR 4.0f
+#define CAMERA_ZFAR 5.0f
 
 using namespace std;
 

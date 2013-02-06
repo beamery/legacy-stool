@@ -48,6 +48,9 @@
     <ClCompile Include="Table.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Lamp.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="Table.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Lamp.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>

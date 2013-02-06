@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Floor.cpp" />
@@ -92,6 +93,7 @@
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Lamp.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Floor.h" />

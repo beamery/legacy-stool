@@ -14,6 +14,7 @@
 #include "Stool.h"
 #include "Floor.h"
 #include "Table.h"
+#include "Lamp.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ private:
 	Floor sceneFloor;
 	vector<Stool> stools;
 	Table table;
+	Lamp lamp;
 };
 
 

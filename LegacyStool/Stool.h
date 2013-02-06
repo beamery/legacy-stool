@@ -1,6 +1,13 @@
 #ifndef STOOL_H
 #define STOOL_H
 
+#include <iostream>
+#include <gl/freeglut.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp> 
+#include "MatrixStack.h"
+
 // All measurements in inches
 #define STOOL_HEIGHT 24.75f
 
@@ -22,12 +29,6 @@
 #define BOT_DISK_RAD 3.3f
 #define DISK_THICKNESS 0.8f
 
-#include <iostream>
-#include <gl/freeglut.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
-#include "MatrixStack.h"
 
 // Contains position as well as rendering information for a single stool
 class Stool	{

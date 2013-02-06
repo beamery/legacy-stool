@@ -1,7 +1,8 @@
 #include "Scene.h"
 
 Scene::Scene(int stoolCount) : 
-	table(Table(glm::vec3(60.0f, 0.0f, 60.0f))) {
+	table(Table(glm::vec3(60.0f, 0.0f, 60.0f))),
+	lamp(Lamp()) {
 
 	if (stoolCount >= 1) {
 		stools.push_back(
@@ -49,11 +50,13 @@ void Scene::draw(MatrixStack &mViewStack, bool hasTable) {
 		mViewStack.pop();
 	}
 
-	// optionally draw a table
+	// optionally draw a table and a lamp on top of it
 	if (hasTable) {
 		mViewStack.push();
 		mViewStack.active = glm::translate(mViewStack.active, table.getPos());
 		table.draw(mViewStack);
+		mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, TABLE_HEIGHT, 0.0f));
+		lamp.draw(mViewStack);
 		mViewStack.pop();
 	}
 
