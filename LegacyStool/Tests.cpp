@@ -36,7 +36,7 @@ void testMatrixStack() {
 }
 
 void testScene() {
-	Scene s(4);
+	Scene s;
 	s.print();
 }
 

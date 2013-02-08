@@ -48,6 +48,9 @@ void Table::draw(MatrixStack &mViewStack) {
 	drawSide(mViewStack, 
 		0.0f, (TABLE_WIDTH - TABLE_SIDE_THICKNESS) / 2,
 		TABLE_WIDTH - 2 * TABLE_LEG_THICKNESS, 1.0f);
+	drawSide(mViewStack, 
+		0.0f, -(TABLE_WIDTH - TABLE_SIDE_THICKNESS) / 2,
+		TABLE_WIDTH - 2 * TABLE_LEG_THICKNESS, 1.0f);
 
 	mViewStack.pop();
 }
@@ -65,7 +68,7 @@ void Table::drawLeg(MatrixStack &mViewStack, float xOffset, float zOffset) {
 		TABLE_HEIGHT - TABLE_TOP_THICKNESS,   // y
 		TABLE_LEG_THICKNESS));                // z
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-	glColor3f(0.5f, 0.0f, 0.5f);
+	glColor3f(0.6f, 0.5f, 0.8f);
 	glutSolidCube(1.0);
 	mViewStack.pop();
 }
@@ -84,7 +87,7 @@ void Table::drawSide(
 	mViewStack.active = glm::scale(
 		mViewStack.active, 
 		glm::vec3(xScale, TABLE_LEG_THICKNESS, zScale));
-	glColor3f(0.6f, 0.4f, 0.0f);
+	glColor3f(0.8f, 0.8f, 0.6f);
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 	glutSolidCube(1.0);
 

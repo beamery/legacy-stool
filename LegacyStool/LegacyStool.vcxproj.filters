@@ -48,7 +48,7 @@
     <ClCompile Include="Table.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
-    <ClCompile Include="Lamp.cpp">
+    <ClCompile Include="Vase.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,8 +74,11 @@
     <ClInclude Include="Table.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
-    <ClInclude Include="Lamp.h">
+    <ClInclude Include="Vase.h">
       <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

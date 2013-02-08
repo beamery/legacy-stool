@@ -14,7 +14,7 @@
 #include "Stool.h"
 #include "Floor.h"
 #include "Table.h"
-#include "Lamp.h"
+#include "Vase.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class Scene {
 
 public:
 	// Initialize scene with the given number of stools
-	Scene(int stoolCount);
+	Scene(/*int stoolCount*/);
 
 	// Draw the whole scene (floor, stools)
 	void draw(MatrixStack &mViewStack, bool hasTable = false);
@@ -37,7 +37,7 @@ private:
 	Floor sceneFloor;
 	vector<Stool> stools;
 	Table table;
-	Lamp lamp;
+	vector<Vase> vases;
 };
 
 

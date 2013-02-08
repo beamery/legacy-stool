@@ -6,12 +6,13 @@
 #include "Tests.h"
 #include "Scene.h"
 #include "MatrixStack.h"
+#include "Constants.h"
 
 #define DEFAULT_FOV 50.0f
-#define CAMERA_DIST 4.0f
+#define CAMERA_DIST 3.0f
 #define CAMERA_HEIGHT 1.0f
 #define CAMERA_ZNEAR 0.5f
-#define CAMERA_ZFAR 5.0f
+#define CAMERA_ZFAR 4.5f
 
 using namespace std;
 
@@ -26,9 +27,8 @@ struct WindowData {
 } fpWin;
 WindowData tpWin;
 
-Scene scene(1);
+Scene scene;
 MatrixStack mViewStack;
-const float PI = atan(1) * 4.0f;
 
 void DisplayFunc() {
 	// How long have we been running (in seconds)?
@@ -36,6 +36,7 @@ void DisplayFunc() {
 
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, fpWin.wireframe ? GL_LINE : GL_FILL);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, fpWin.width, fpWin.height);
@@ -88,7 +89,7 @@ void TPDisplayFunc() {
 	mViewStack.push();
 
 	// position entire system
-	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -1.0f, -2.5 * CAMERA_DIST));
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -0.0f, -2.5 * CAMERA_DIST));
 
 	// perform camera rotations
 	mViewStack.active = glm::rotate(mViewStack.active, -fpWin.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
