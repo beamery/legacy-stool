@@ -19,7 +19,7 @@ void Table::draw(MatrixStack &mViewStack) {
 	mViewStack.active = glm::scale(
 		mViewStack.active, glm::vec3(
 		TABLE_WIDTH, TABLE_TOP_THICKNESS, TABLE_LENGTH));
-	glColor3f(0.0f, 0.5f, 0.5f);
+	glColor3f(0.3f, 0.6f, 0.6f);
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 	glutSolidCube(1.0);
 	mViewStack.pop();

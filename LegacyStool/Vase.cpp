@@ -44,11 +44,11 @@ void Vase::draw(MatrixStack &mViewStack) {
 
 	GLUquadric *q = gluNewQuadric();
 
-	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.1f, 0.0f));
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.01f, 0.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 	glColor3f(0.2f + r, 0.2f + g, 0.2f + b);
-	gluDisk(q, 0.0f, rad, 21, 1);
+	gluDisk(q, 0.0f, rad, 32, 1);
 
 	gluDeleteQuadric(q);
 	mViewStack.pop();

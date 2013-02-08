@@ -1,7 +1,7 @@
 #include "Stool.h"
 
 Stool::Stool(glm::vec3 position)  : 
-	pos(position), heightAdjust(0.0f) {}
+	pos(position), heightAdjust(0.2f) {}
 
 glm::vec3 Stool::getPos() const {
 	return pos;
@@ -48,8 +48,8 @@ void Stool::draw(MatrixStack &mViewStack) {
 
 void Stool::adjustHeight(float amount) {
 	heightAdjust += amount;
-	heightAdjust = max(0.0f, heightAdjust);
-	heightAdjust = min(heightAdjust, 4.375f);
+	heightAdjust = max(0.2f, heightAdjust);
+	heightAdjust = min(heightAdjust, 4.575f);
 }
 
 
@@ -87,11 +87,34 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	// draw bottom of stool seat
 	mViewStack.push();
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -SEAT_THICKNESS, 0.0f));
+	mViewStack.push();
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 
 	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
 	gluDisk(q, 0, SEAT_DIAM / 2, 32, 1); // divide by 2 to get radius
+
+	mViewStack.pop();
+
+	// draw skewed disk at bottom of seat
+	drawSkewedDisk(mViewStack, SEAT_DIAM / 2 - 2.5f, SEAT_DIAM / 2, 0.5f, 32);
+
+	mViewStack.push();
+	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -0.5f, 0.0f));
+
+	mViewStack.push();
+	// bottom disk below skewed disk
+	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glColor4f(0.05f, 0.3f, 0.4f, 1.0f);
+	gluDisk(q, 0, SEAT_DIAM / 2 - 2.5f, 32, 1);
+	mViewStack.pop();
+
+	// little skewed disk
+	drawSkewedDisk(mViewStack, STEM_DIAM / 2, STEM_DIAM / 2 + 1, 0.2f, 32);
+
+	mViewStack.pop();
+
 	mViewStack.pop();
 
 	// draw seat stem
@@ -226,3 +249,22 @@ void Stool::drawDisk(MatrixStack &mViewStack, float radius, float height) {
 	mViewStack.pop();
 	mViewStack.pop();
 }
+
+void Stool::drawSkewedDisk(MatrixStack &mViewStack, float inRad, float outRad, 
+						   float height, int slices) {
+	mViewStack.push();
+
+	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
+	glBegin(GL_QUAD_STRIP);
+	for (float theta = 0; theta <= 2 * PI; theta +=  2 * PI / slices) {
+		glVertex3f(inRad * cos(theta), -height, inRad * sin(theta));
+		glVertex3f(outRad * cos(theta), 0.0f, outRad * sin(theta));
+	}
+	// two more vertices at beginning for continuity
+		glVertex3f(inRad * cos(0.0f), -height, inRad * sin(0.0f));
+		glVertex3f(outRad * cos(0.0f), 0.0f, outRad * sin(0.0f));
+	glEnd();
+	mViewStack.pop();
+}
+

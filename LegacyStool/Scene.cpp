@@ -13,7 +13,7 @@ Scene::Scene(/*int stoolCount*/) :
 		stools.push_back(
 			Stool(glm::vec3(60.0f, 0.0f, 60.0f - STOOL_OFFSET)));
 		stools.push_back(
-			Stool(glm::vec3(20.0f, 0.0f, 20.0f)));
+			Stool(glm::vec3(100.0f, 0.0f, 100.0f)));
 	//}
 
 	// large vase
@@ -22,7 +22,7 @@ Scene::Scene(/*int stoolCount*/) :
 
 	// wide bowl
 	vases.push_back(Vase(glm::vec3(-10.0f, 0.0f, 10.0f), 
-		5.0f, 3.0f, 3.0f, 2 * PI / 14.0f, 0.0f, 20, 10));
+		4.0f, 3.0f, 3.0f, 2 * PI / 14.0f, 0.0f, 20, 10));
 
 	// goblet
 	vases.push_back(Vase(glm::vec3(6.0f, 0.0f, -10.0f), 
