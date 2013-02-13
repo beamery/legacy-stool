@@ -234,11 +234,9 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 void SpecialFunc(int c, int x, int y) {
 	switch (c) {
 	case GLUT_KEY_UP:
-		fpWin.rotX++;
 		fpWin.rotX = min(fpWin.rotX + 1, 89.0f);
 		break;
 	case GLUT_KEY_DOWN:
-		fpWin.rotX--;
 		fpWin.rotX = max(fpWin.rotX - 1, -89.0f);
 		break;
 	case GLUT_KEY_LEFT:
