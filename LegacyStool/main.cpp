@@ -31,20 +31,35 @@ Scene scene;
 MatrixStack mViewStack;
 
 void DisplayFunc() {
-	// How long have we been running (in seconds)?
-	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
+	GLint curWin = glutGetWindow();
 
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, fpWin.wireframe ? GL_LINE : GL_FILL);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, fpWin.width, fpWin.height);
+
+	// set up viewport
+	if (curWin == fpWin.handle) {
+		glViewport(0, 0, fpWin.width, fpWin.height);
+	}
+	else {
+		glViewport(0, 0, tpWin.width, tpWin.height);
+	}
 	glMatrixMode(GL_PROJECTION);
 
-	fpWin.aspect = float(fpWin.width) / float(fpWin.height);
-	glm::mat4 projection_matrix = glm::perspective(
-		fpWin.fov, fpWin.aspect, CAMERA_ZNEAR, CAMERA_ZFAR);
+	// set up perspective
+	glm::mat4 projection_matrix;
+	if (curWin == fpWin.handle) {
+		fpWin.aspect = float(fpWin.width) / float(fpWin.height);
+		projection_matrix = glm::perspective(
+			fpWin.fov, fpWin.aspect, CAMERA_ZNEAR, CAMERA_ZFAR);
+	}
+	else {
+		tpWin.aspect = float(tpWin.width) / float(tpWin.height);
+		projection_matrix = glm::perspective(
+			tpWin.fov, tpWin.aspect, 1.0f, 100.0f);
+	}
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -53,13 +68,28 @@ void DisplayFunc() {
 
 	// set up basic camera position and orientation
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, -CAMERA_DIST));
+	
+	if (curWin == tpWin.handle) {
+		// pull back third person camera a bit further (so it can see the first person camera)
+		mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -0.0f, -1.5 * CAMERA_DIST));
+
+		// perform reversed camera rotations (to keep third person camera fixed)
+		mViewStack.active = glm::rotate(mViewStack.active, -fpWin.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
+		mViewStack.active = glm::rotate(mViewStack.active, -fpWin.rotX, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		mViewStack.push();
+		// pull the camera back from the scene
+		mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.0f, CAMERA_DIST));
+		DrawCamera(mViewStack);
+		DrawFrustum(mViewStack);
+		mViewStack.pop();
+	}
 
 	// user controlled rotations
 	mViewStack.active = glm::rotate(mViewStack.active, fpWin.rotX, glm::vec3(1.0f, 0.0f, 0.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, fpWin.rotY, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-
 	scene.draw(mViewStack, fpWin.tableRender);
 
 	mViewStack.pop();
@@ -68,7 +98,7 @@ void DisplayFunc() {
 	glutPostRedisplay();
 }
 
-
+/*
 void TPDisplayFunc() {
 	// How long have we been running (in seconds)?
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
@@ -80,8 +110,9 @@ void TPDisplayFunc() {
 	glViewport(0, 0, tpWin.width, tpWin.height);
 	glMatrixMode(GL_PROJECTION);
 
+	tpWin.aspect = float(tpWin.width) / float(tpWin.height);
 	glm::mat4 projection_matrix = glm::perspective(
-		tpWin.fov, float(tpWin.width) / float(tpWin.height), 1.0f, 100.0f);
+		tpWin.fov, tpWin.aspect, 1.0f, 100.0f);
 	glLoadMatrixf(glm::value_ptr(projection_matrix));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -114,6 +145,7 @@ void TPDisplayFunc() {
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
+*/
 
 /*
  * Draws camera. Camera transformations in this function are specified in inches.
@@ -269,7 +301,7 @@ int main(int argc, char * argv[]) {
 	tpWin.rotX = 0.0f;
 	tpWin.rotY = 0.0f;
 	tpWin.handle = glutCreateWindow("Legacy Stool - Third Person");
-	glutDisplayFunc(TPDisplayFunc);
+	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(TPReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);
 	glutSpecialFunc(SpecialFunc);

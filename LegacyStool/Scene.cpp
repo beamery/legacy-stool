@@ -21,7 +21,7 @@ Scene::Scene(/*int stoolCount*/) :
 		14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10));
 
 	// wide bowl
-	vases.push_back(Vase(glm::vec3(-10.0f, 0.0f, 10.0f), 
+	vases.push_back(Vase(glm::vec3(-12.0f, 0.0f, 8.0f), 
 		4.0f, 3.0f, 3.0f, 2 * PI / 14.0f, 0.0f, 20, 10));
 
 	// goblet
