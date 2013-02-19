@@ -6,9 +6,9 @@ Vase::Vase(glm::vec3 pos, float height, float radius, float curveMag, float curv
 			pos(pos), height(height), rad(radius), cMag(curveMag), 
 			cFreq(curveFreq), cOffset(curveOffset), slices(slices), stacks(stacks) {
 			
-				r = rand() / float(RAND_MAX) * 0.5f;
-				g = rand() / float(RAND_MAX) * 0.5f;
-				b = rand() / float(RAND_MAX) * 0.5f;
+				r = (rand() / float(RAND_MAX) * 0.5f) + 0.5f;
+				g = (rand() / float(RAND_MAX) * 0.5f) + 0.5f;
+				b = (rand() / float(RAND_MAX) * 0.5f) + 0.5f;
 			}
 
 
@@ -16,8 +16,9 @@ void Vase::draw(MatrixStack &mViewStack) {
 
 	mViewStack.push();
 
+	// draw vase cylinder (skewed by sine)
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
-	glColor3f(0.5f + r, 0.5f + g, 0.5f + b);
+	glColor3f(r, g, b);
 	for (float y = 0; y < height; y += height / stacks) {
 		glBegin(GL_QUAD_STRIP);
 		for (float theta = 0; theta <= 2 * PI; theta +=  2 * PI / slices) {
@@ -44,11 +45,12 @@ void Vase::draw(MatrixStack &mViewStack) {
 
 	GLUquadric *q = gluNewQuadric();
 
+	// draw bottom of vase
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, 0.01f, 0.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
 	glColor3f(0.2f + r, 0.2f + g, 0.2f + b);
-	gluDisk(q, 0.0f, rad, 32, 1);
+	gluDisk(q, 0.0f, rad - 0.0075f, 32, 1); // subtract small amount to prevent protrusion
 
 	gluDeleteQuadric(q);
 	mViewStack.pop();

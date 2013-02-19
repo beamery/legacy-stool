@@ -51,6 +51,12 @@
     <ClCompile Include="Vase.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Fan.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h">
@@ -80,14 +86,15 @@
     <ClInclude Include="Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fan.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="notes.md">
-      <Filter>Docs</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="features.md">
+    <None Include="README.md">
       <Filter>Docs</Filter>
     </None>
   </ItemGroup>

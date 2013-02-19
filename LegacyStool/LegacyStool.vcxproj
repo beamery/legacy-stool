@@ -82,6 +82,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Fan.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Vase.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClCompile Include="Error.cpp" />
@@ -94,6 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Fan.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Vase.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="Error.h" />
@@ -104,10 +108,7 @@
     <ClInclude Include="Tests.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="notes.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="features.md" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

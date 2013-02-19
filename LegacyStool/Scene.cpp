@@ -1,7 +1,8 @@
 #include "Scene.h"
 
 Scene::Scene(/*int stoolCount*/) : 
-	table(Table(glm::vec3(60.0f, 0.0f, 60.0f))) {
+	table(Table(glm::vec3(60.0f, 0.0f, 60.0f))),
+	fan(Fan(glm::vec3(100.0f, 0.0f, 20.0f))) {
 
 	//if (stoolCount >= 1) {
 		stools.push_back(
@@ -26,7 +27,7 @@ Scene::Scene(/*int stoolCount*/) :
 
 	// goblet
 	vases.push_back(Vase(glm::vec3(6.0f, 0.0f, -10.0f), 
-		6.0f, 1.5f, 1.0f, 2 * PI / 8.0f, 4.0f, 20, 10));
+		6.0f, 1.5f, 1.0f, 2 * PI / 8.0f, 4.0f, 32, 10));
 
 	/*for (int i = 0; i < stoolCount - 1; i++) {
 		float x = float(rand() % int(floor(110 - LEG_HORIZ_OFFSET)));
@@ -44,6 +45,9 @@ void Scene::draw(MatrixStack &mViewStack, bool hasTable) {
 	// set up floor transformations
 	mViewStack.active = glm::scale(mViewStack.active, 
 		glm::vec3(INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT, INCHES_PER_WORLD_UNIT));
+
+	// camera revolves around the scene, centered on the x and z axes, but 
+	// shifted 36 inches up on the y axis.
 	mViewStack.active = glm::translate(mViewStack.active, 
 		glm::vec3(-60.0f, -36.0f, -60.0f));
 
@@ -80,14 +84,27 @@ void Scene::draw(MatrixStack &mViewStack, bool hasTable) {
 		//glDisable(GL_BLEND);
 		mViewStack.pop();
 	}
+
+	// draw the fan
+	mViewStack.push();
+	mViewStack.active = glm::translate(mViewStack.active, fan.getPos());
+	fan.draw(mViewStack);
+	mViewStack.pop();
+
 	// restore previous transformation matrix
 	mViewStack.pop();
 }
 
+// adjusts the heights of all stools in the scene
 void Scene::adjustStoolHeights(float amount) {
 	for (auto i = stools.begin(); i != stools.end(); i++) {
 		i->adjustHeight(amount);
 	}
+}
+
+// sets the rotation of the fan's blades
+void Scene::setFanRotation(float amount) {
+	fan.setRotation(amount);
 }
 
 

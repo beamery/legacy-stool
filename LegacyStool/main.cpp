@@ -31,6 +31,11 @@ Scene scene;
 MatrixStack mViewStack;
 
 void DisplayFunc() {
+	// get elapsed time (in seconds)
+	float elapsedTime = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
+	// update the fan rotation
+	scene.setFanRotation(elapsedTime * 180.0f);
+
 	GLint curWin = glutGetWindow();
 
 	glEnable(GL_DEPTH_TEST);

@@ -15,6 +15,7 @@
 #include "Floor.h"
 #include "Table.h"
 #include "Vase.h"
+#include "Fan.h"
 
 using namespace std;
 
@@ -28,7 +29,11 @@ public:
 	// Draw the whole scene (floor, stools)
 	void draw(MatrixStack &mViewStack, bool hasTable = false);
 
+	// adjusts the heights of all of the stools in the scene
 	void adjustStoolHeights(float amount);
+
+	// sets the rotation of the fan's blades
+	void setFanRotation(float amount);
 
 	// Print the stools contained in this scene
 	void print() const;
@@ -38,6 +43,7 @@ private:
 	vector<Stool> stools;
 	Table table;
 	vector<Vase> vases;
+	Fan fan;
 };
 
 

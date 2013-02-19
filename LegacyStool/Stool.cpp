@@ -97,6 +97,7 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.pop();
 
 	// draw skewed disk at bottom of seat
+	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
 	drawSkewedDisk(mViewStack, SEAT_DIAM / 2 - 2.5f, SEAT_DIAM / 2, 0.5f, 32);
 
 	mViewStack.push();
@@ -111,6 +112,7 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.pop();
 
 	// little skewed disk
+	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
 	drawSkewedDisk(mViewStack, STEM_DIAM / 2, STEM_DIAM / 2 + 1, 0.2f, 32);
 
 	mViewStack.pop();
@@ -119,6 +121,7 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 
 	// draw seat stem
 	mViewStack.push();
+
 	mViewStack.push();
 	mViewStack.active = glm::translate(mViewStack.active, glm::vec3(0.0f, -SEAT_THICKNESS, 0.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -132,11 +135,10 @@ void Stool::drawSeatAndStem(MatrixStack &mViewStack) {
 	mViewStack.active = glm::translate(mViewStack.active, 
 		glm::vec3(0.0f, -SEAT_THICKNESS - STEM_LENGTH, 0.0f));
 	mViewStack.active = glm::rotate(mViewStack.active, 90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-
 	glLoadMatrixf(glm::value_ptr(mViewStack.active));
+
 	glColor4f(0.1f, 0.4f, 0.4f, 1.0f);
 	gluDisk(q, 0.0, STEM_DIAM / 2, 32, 1); 
-
 	mViewStack.pop();
 
 	mViewStack.pop();
@@ -250,6 +252,7 @@ void Stool::drawDisk(MatrixStack &mViewStack, float radius, float height) {
 	mViewStack.pop();
 }
 
+/* MOVED to Utils.cpp
 void Stool::drawSkewedDisk(MatrixStack &mViewStack, float inRad, float outRad, 
 						   float height, int slices) {
 	mViewStack.push();
@@ -266,5 +269,5 @@ void Stool::drawSkewedDisk(MatrixStack &mViewStack, float inRad, float outRad,
 		glVertex3f(outRad * cos(0.0f), 0.0f, outRad * sin(0.0f));
 	glEnd();
 	mViewStack.pop();
-}
+}*/
 

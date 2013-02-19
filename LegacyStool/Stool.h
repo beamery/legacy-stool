@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp> 
 #include "MatrixStack.h"
 #include "Constants.h"
+#include "Utils.h"
 
 // All measurements in inches
 #define STOOL_HEIGHT 24.75f
@@ -55,10 +56,12 @@ private:
 	void drawLeg(MatrixStack &mViewStack, float rotation);
 	void drawRing(MatrixStack &mViewStack);
 	void drawDisk(MatrixStack &mViewStack, float radius, float height);
-	void drawSkewedDisk(MatrixStack &mViewStack, float inRad, float outRad, 
-		float height, int slices);
 	glm::vec3 pos;
 	float heightAdjust;
+
+	// this function moved to Utils.h
+	//void drawSkewedDisk(MatrixStack &mViewStack, float inRad, float outRad, 
+		//float height, int slices);
 };
 
 
