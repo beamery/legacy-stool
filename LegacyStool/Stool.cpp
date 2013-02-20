@@ -204,6 +204,7 @@ void Stool::drawRing(MatrixStack &mViewStack) {
 	glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
 	glutSolidTorus(RING_THICKNESS, RING_OUTER_RAD, 10, 20);
 
+	gluDeleteQuadric(q);
 	mViewStack.pop();
 }
 
